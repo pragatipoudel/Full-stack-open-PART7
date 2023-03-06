@@ -16,11 +16,17 @@ const CreateNew = ({addNew, notification, setNotification}) => {
         info: info.value,
         votes: 0
       })
-      setNotification(`A new anecdote ${content} was added`)
+      setNotification(`A new anecdote ${content.value} was added`)
       setTimeout(() => {
         setNotification('')
       }, 5000)
       navigate('/')
+    }
+
+    const handleReset = (event) => {
+        content.Reset()
+        info.Reset()
+        author.Reset()
     }
   
     return (
@@ -41,6 +47,7 @@ const CreateNew = ({addNew, notification, setNotification}) => {
           </div>
           <button>create</button>
         </form>
+        <button onClick={handleReset}>reset</button>
       </div>
     )
   
