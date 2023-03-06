@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import {
-  BrowserRouter as Router,
-  Routes, Route, Link, useMatch
+  Routes, Route, Link, useMatch,
+  useNavigate
 
 } from 'react-router-dom'
+import Notification from './Notification'
 
-const Menu = () => {
+const Menu = ({ notification }) => {
   const padding = {
     paddingRight: 5
   }
@@ -14,6 +15,7 @@ const Menu = () => {
       <Link style={padding} to="/">anecdotes</Link>
       <Link style={padding} to="/create">create new</Link>
       <Link style={padding} to="/about">about</Link>
+      <Notification notification={notification} />
     </div>
   )
 }
@@ -52,20 +54,27 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+const CreateNew = ({addNew, notification, setNotification}) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const navigate = useNavigate()
+
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
+    addNew({
       content,
       author,
       info,
       votes: 0
     })
+    setNotification(`A new anecdote ${content} was added`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
+    navigate('/')
   }
 
   return (
@@ -146,16 +155,13 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-        <Menu />
+        <Menu notification={notification}/>
         <Routes>
           <Route path ="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
           <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
-          <Route path="/create" element={<CreateNew addNew={addNew} />} />
+          <Route path="/create" element={<CreateNew addNew={addNew} notification={notification} setNotification={setNotification}/>} />
           <Route path="/about" element={<About />} />
         </Routes>
-        {/* <AnecdoteList anecdotes={anecdotes} />
-        <About />
-        <CreateNew addNew={addNew} /> */}
       <Footer />
     </div>
   )
